@@ -1,10 +1,11 @@
 const { isValidateEmail, isValidatePassword } = require("../helpers/utils");
+const authSchema = require("../models/authSchema");
 
 const registration = async (req, res) => {
-  const { fillname, email, password } = req.body;
+  const { fullname, email, password } = req.body;
   try {
     // check if email is exist in db
-    const existingUser = await userSchema.findOne({ email });
+    const existingUser = await authSchema.findOne({ email });
     if (existingUser)
       return res
         .status(400)
@@ -12,7 +13,7 @@ const registration = async (req, res) => {
 
     // Validation
     // name
-    if (!fillname) return res.status(400).send("Name is required");
+    if (!fullname?.trim()) return res.status(400).send("Name is required");
 
     // email validation
     if (!email) return res.status(400).send("email is required");
@@ -23,9 +24,21 @@ const registration = async (req, res) => {
     if (!isValidatePassword(password))
       return res.status(400).send("password not valid");
 
-
-
-  } catch (error) {}
+    // user save on database
+    const user = await authSchema({ fullname, email, password });
+    user.save();
+    res.status(200).send({
+      success: true,
+      message: "Register successfull Please verify your email",
+      fullname,
+      email,
+      password,
+    });
+  } catch (error) {
+    console.log(error);
+    
+    res.status(500).send({ success: false, message: "Internal server Error" });
+  }
 };
 
 module.exports = { registration };
