@@ -1,8 +1,10 @@
-const express = require("express")
+const express = require("express");
+const { registration } = require("../constrollers/authController");
 
-const authrouter = express.Router()
+const router = express.Router();
 
+router.get("/registration", registration);
 
+module.exports = router;
 
-
-module.exports = authrouter
+// task_manager
