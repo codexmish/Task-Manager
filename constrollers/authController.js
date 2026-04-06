@@ -24,9 +24,16 @@ const registration = async (req, res) => {
     if (!isValidatePassword(password))
       return res.status(400).send("password not valid");
 
+    // Generate OTP
+    
+
     // user save on database
     const user = await authSchema({ fullname, email, password });
     user.save();
+
+
+
+
     res.status(200).send({
       success: true,
       message: "Register successfull Please verify your email",

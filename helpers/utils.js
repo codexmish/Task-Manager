@@ -8,4 +8,8 @@ function isValidatePassword(password) {
   return passwordRagex.test(password);
 }
 
+const generateOTP = ()=>{
+  
+}
+
 module.exports = { isValidateEmail, isValidatePassword };
