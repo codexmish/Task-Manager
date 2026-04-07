@@ -1,5 +1,6 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
+const { OTPMailTemp } = require("./emailTemplates");
 
 // Create a transporter using SMTP
 const transporter = nodemailer.createTransport({
@@ -20,7 +21,8 @@ const OTPmailSend = async ({ email, subject, otp }) => {
       from: '"Taskmanager" <team@example.com>', // sender address
       to: email, // list of recipients
       subject: subject, // subject line
-      html: `<b>verify email otp: ${otp}</b>`, // HTML body
+      html: OTPMailTemp(otp), // HTML body
+      
     });
   } catch (error) {
     console.log("Error while sending mail", error);

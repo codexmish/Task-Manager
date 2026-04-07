@@ -32,6 +32,7 @@ const registration = async (req, res) => {
     // Generate OTP
     const OTP_num = generateOTP();
     const OTP_exp_time = Date.now() + 3 * 60 * 1000;
+    
 
     // user save on database
     const user = await authSchema({
