@@ -10,4 +10,7 @@ app.use(express.json());
 app.use(router);
 dbConfig()
 
+// console.log(process.env.APP_USER, process.env.APP_PASS);
+
+
 app.listen(8000, () => console.log("server running"));

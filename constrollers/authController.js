@@ -1,4 +1,9 @@
-const { isValidateEmail, isValidatePassword } = require("../helpers/utils");
+const OTPmailSend = require("../helpers/mailService");
+const {
+  isValidateEmail,
+  isValidatePassword,
+  generateOTP,
+} = require("../helpers/utils");
 const authSchema = require("../models/authSchema");
 
 const registration = async (req, res) => {
@@ -25,14 +30,25 @@ const registration = async (req, res) => {
       return res.status(400).send("password not valid");
 
     // Generate OTP
-    
+    const OTP_num = generateOTP();
+    const OTP_exp_time = Date.now() + 3 * 60 * 1000;
 
     // user save on database
-    const user = await authSchema({ fullname, email, password });
+    const user = await authSchema({
+      fullname,
+      email,
+      password,
+      otp: OTP_num,
+      otpExpiry: OTP_exp_time,
+    });
     user.save();
 
-
-
+    // sending otp with mail
+    await OTPmailSend({
+      email,
+      subject: "otp verification mail",
+      otp: OTP_num,
+    });
 
     res.status(200).send({
       success: true,
@@ -43,7 +59,7 @@ const registration = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    
+
     res.status(500).send({ success: false, message: "Internal server Error" });
   }
 };
