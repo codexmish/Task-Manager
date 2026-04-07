@@ -98,4 +98,39 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-module.exports = { registration, verifyOTP };
+const login = async () => {
+  const { email, password } = req.body;
+
+  try {
+    const userData = await authSchema.findOne({ email });
+    console.log(userData);
+
+    if (!userData)
+      return res
+        .status(400)
+        .send({ success: false, message: "invalid credientials" });
+
+    if (!userData.isVerified)
+      return res
+        .status(400)
+        .send({ success: false, message: "User is not verified" });
+
+    // Load hash from your password DB.
+    // bcrypt.compare(password, userData.password, function (err, result) {
+    //   if (!result) return res.status(400).send("invalid credientials");
+    //   console.log(result);
+    // });
+
+    const matchPassword =  await userData.comparePassword(password)
+    console.log(matchPassword);
+    
+    res
+      .status(200)
+      .send({ success: true, message: "Login successfully", userData });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ success: false, message: "Server Error" });
+  }
+};
+
+module.exports = { registration, verifyOTP, login };
