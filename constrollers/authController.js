@@ -32,7 +32,6 @@ const registration = async (req, res) => {
     // Generate OTP
     const OTP_num = generateOTP();
     const OTP_exp_time = Date.now() + 3 * 60 * 1000;
-    
 
     // user save on database
     const user = await authSchema({
@@ -65,4 +64,38 @@ const registration = async (req, res) => {
   }
 };
 
-module.exports = { registration };
+// --------verifyOTP
+
+const verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await authSchema.findOneAndUpdate(
+      {
+        email,
+        otp,
+        otpExpiry: { $gt: Date.now() },
+      },
+      {
+        isVerified: true,
+        otp: null,
+        otpExpiry: null,
+      },
+      {
+        returnDocument: "after",
+      },
+    );
+
+    if (!user)
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid REquest" });
+    res
+      .status(200)
+      .send({ success: true, message: "Email Verified successfully" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Internal Server Error" });
+  }
+};
+
+module.exports = { registration, verifyOTP };
