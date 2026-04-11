@@ -3,6 +3,7 @@ const {
   isValidateEmail,
   isValidatePassword,
   generateOTP,
+  generateAccessToken,
 } = require("../helpers/utils");
 const authSchema = require("../models/authSchema");
 
@@ -128,6 +129,13 @@ const login = async (req, res) => {
       return res
         .status(400)
         .send({ success: false, message: "invalid credientials" });
+
+        // access token
+        const accessToken = generateAccessToken({_id: userData._id, email: userData.email})
+        console.log(accessToken);
+
+        res.cookie("accessToken", accessToken)
+        
 
     res
       .status(200)

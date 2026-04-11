@@ -1,4 +1,6 @@
-const crypto = require('crypto');
+const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 function isValidateEmail(email) {
   const emailRagex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,8 +12,18 @@ function isValidatePassword(password) {
   return passwordRagex.test(password);
 }
 
-const generateOTP = ()=>{
+const generateOTP = () => {
   return crypto.randomInt(1000, 10000).toString();
-}
+};
 
-module.exports = { isValidateEmail, isValidatePassword, generateOTP };
+const generateAccessToken = (user) => {
+  const token = jwt.sign(user, process.env.JWT_SEC);
+  return token;
+};
+
+module.exports = {
+  isValidateEmail,
+  isValidatePassword,
+  generateOTP,
+  generateAccessToken,
+};
