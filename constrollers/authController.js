@@ -142,4 +142,13 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { registration, verifyOTP, login };
+
+// ------------user profile
+
+const userProfile = (req, res)=>{
+  console.log(req.cookies);
+  
+
+}
+
+module.exports = { registration, verifyOTP, login, userProfile };
