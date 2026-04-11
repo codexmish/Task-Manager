@@ -40,7 +40,6 @@ authSchema.pre("save", async function () {
     const round = 10;
     const salt = await bcrypt.genSalt(round);
     this.password = await bcrypt.hash(this.password, salt);
-    
   } catch (error) {
     res.status(500).send({ success: false, message: "Internal server Error" });
   }

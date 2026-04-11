@@ -7,8 +7,6 @@ const {
 } = require("../helpers/utils");
 const authSchema = require("../models/authSchema");
 
-
-
 // -------registration
 const registration = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -102,7 +100,6 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-
 // ------------login
 
 const login = async (req, res) => {
@@ -121,21 +118,20 @@ const login = async (req, res) => {
         .status(400)
         .send({ success: false, message: "User is not verified" });
 
-
     const matchPassword = await userData.comparePassword(password);
     console.log(matchPassword);
     if (!matchPassword)
-      
       return res
         .status(400)
         .send({ success: false, message: "invalid credientials" });
 
-        // access token
-        const accessToken = generateAccessToken({_id: userData._id, email: userData.email})
-        console.log(accessToken);
+    // access token
+    const accessToken = generateAccessToken({
+      _id: userData._id,
+      email: userData.email,
+    });
 
-        res.cookie("accessToken", accessToken)
-        
+    res.cookie("accessToken", accessToken);
 
     res
       .status(200)
