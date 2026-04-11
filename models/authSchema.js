@@ -37,13 +37,10 @@ authSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
   try {
-    // const round = 10
-    // const salt = await bcrypt.genSalt(round)
-    // this.password = await bcrypt.hash(this.password, salt)
-
-    bcrypt.hash(this.password, 10, function (err, hash) {
-
-    });
+    const round = 10;
+    const salt = await bcrypt.genSalt(round);
+    this.password = await bcrypt.hash(this.password, salt);
+    
   } catch (error) {
     res.status(500).send({ success: false, message: "Internal server Error" });
   }

@@ -6,6 +6,9 @@ const {
 } = require("../helpers/utils");
 const authSchema = require("../models/authSchema");
 
+
+
+// -------registration
 const registration = async (req, res) => {
   const { fullname, email, password } = req.body;
   try {
@@ -98,12 +101,14 @@ const verifyOTP = async (req, res) => {
   }
 };
 
+
+// ------------login
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const userData = await authSchema.findOne({ email });
-    console.log(userData);
 
     if (!userData)
       return res
@@ -115,14 +120,14 @@ const login = async (req, res) => {
         .status(400)
         .send({ success: false, message: "User is not verified" });
 
-    // Load hash from your password DB.
-    // bcrypt.compare(password, userData.password, function (err, result) {
-    //   if (!result) return res.status(400).send("invalid credientials");
-    //   console.log(result);
-    // });
 
     const matchPassword = await userData.comparePassword(password);
     console.log(matchPassword);
+    if (!matchPassword)
+      
+      return res
+        .status(400)
+        .send({ success: false, message: "invalid credientials" });
 
     res
       .status(200)
