@@ -98,7 +98,7 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-const login = async () => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -121,9 +121,9 @@ const login = async () => {
     //   console.log(result);
     // });
 
-    const matchPassword =  await userData.comparePassword(password)
+    const matchPassword = await userData.comparePassword(password);
     console.log(matchPassword);
-    
+
     res
       .status(200)
       .send({ success: true, message: "Login successfully", userData });
