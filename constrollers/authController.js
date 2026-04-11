@@ -142,13 +142,26 @@ const login = async (req, res) => {
   }
 };
 
-
 // ------------user profile
 
-const userProfile = (req, res)=>{
-  console.log(req.cookies);
-  
+const userProfile = async (req, res) => {
+  const userDetails = req.user;
 
-}
+  try {
+    const userData = await authSchema
+      .findOne({ _id: userDetails._id })
+      .select("fullname email avatar");
+    if (!userData) {
+      return res
+        .status(404)
+        .send({ success: false, message: "User not found" });
+    }
+    res.status(200).send({ success: true, profile: userData });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal server error" });
+  }
+};
 
 module.exports = { registration, verifyOTP, login, userProfile };

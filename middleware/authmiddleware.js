@@ -7,6 +7,7 @@ const authmiddleware = (req, res, next)=>{
     try {
         const decoded = jwt.verify(accessToken, process.env.JWT_SEC)
         if(decoded){
+            req.user = decoded
             next()
         }else{
             res.status(401).send({success: false, message: "Unauthorized request"})
