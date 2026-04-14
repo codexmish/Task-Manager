@@ -164,4 +164,22 @@ const userProfile = async (req, res) => {
   }
 };
 
-module.exports = { registration, verifyOTP, login, userProfile };
+// ----------update profile
+const updateProfile = async (req, res)=>{
+  const {fullname}= req.body
+  const userId = req.user._id
+
+  try {
+    console.log(fullname);
+    console.log(req.file);
+    
+    
+    res.send("dfgdg")
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal server error" });
+  }
+}
+
+module.exports = { registration, verifyOTP, login, userProfile, updateProfile };

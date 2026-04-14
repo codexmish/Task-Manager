@@ -5,6 +5,7 @@ const router = require("./route");
 const { dbConfig } = require("./configs/dbConfig");
 const dns = require("dns");
 const cookieParser = require("cookie-parser");
+
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 require("dotenv").config();
 app.use(express.json());
