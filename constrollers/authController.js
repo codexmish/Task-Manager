@@ -6,6 +6,7 @@ const {
   generateAccessToken,
 } = require("../helpers/utils");
 const authSchema = require("../models/authSchema");
+const cloudinary = require('../configs/cloudinaryConfig');
 
 // -------registration
 const registration = async (req, res) => {
@@ -170,12 +171,23 @@ const updateProfile = async (req, res)=>{
   const userId = req.user._id
 
   try {
-    console.log(fullname);
-    console.log(req.file);
+    // console.log(fullname);
+    // console.log(req.file);
+    const base64String = req.file.buffer.toString('base64')
+    const dataUrl = `data:${req.file.mimetype};base64, ${base64String}`
+    // console.log(base64String);
     
+
+    cloudinary.uploader
+  .upload(dataUrl,(error, result)=>{
+    // console.log(result, error);
+    res.send(result)
+  }
+)
     
-    res.send("dfgdg")
   } catch (error) {
+    console.log(error);
+    
     return res
       .status(500)
       .send({ success: false, message: "Internal server error" });
