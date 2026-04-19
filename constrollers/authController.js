@@ -180,7 +180,7 @@ const updateProfile = async (req, res)=>{
 
     cloudinary.uploader
   .upload(dataUrl,(error, result)=>{
-    // console.log(result, error);
+
     res.send(result)
   }
 )
