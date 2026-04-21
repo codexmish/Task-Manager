@@ -1,3 +1,4 @@
+const { uploadCloudinary } = require("../helpers/cloudinaryService");
 const OTPmailSend = require("../helpers/mailService");
 const {
   isValidateEmail,
@@ -171,22 +172,21 @@ const updateProfile = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const base64String = req.file.buffer.toString('base64')
-    const dataUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-    console.log(dataUrl);
+    // const base64String = req.file.buffer.toString('base64')
+    // const dataUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-    cloudinary.uploader.upload(dataUrl, (error, result) => {
-      console.log(result);
-      
-      res.send(result);
+    const avatarUrl = await uploadCloudinary({
+      mimetype: req.file.mimetype,
+      imageBuffer: req.file.buffer,
     });
+
+    res.status(200).send({success: true, message: "profile updated", avatarUrl})
   } catch (error) {
     console.log(error);
 
     return res
       .status(500)
       .send({ success: false, message: "Internal server error" });
-      
   }
 };
 
