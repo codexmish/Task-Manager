@@ -6,7 +6,7 @@ const {
   generateAccessToken,
 } = require("../helpers/utils");
 const authSchema = require("../models/authSchema");
-const cloudinary = require('../configs/cloudinaryConfig');
+const cloudinary = require("../configs/cloudinaryConfig");
 
 // -------registration
 const registration = async (req, res) => {
@@ -166,32 +166,28 @@ const userProfile = async (req, res) => {
 };
 
 // ----------update profile
-const updateProfile = async (req, res)=>{
-  const {fullname}= req.body
-  const userId = req.user._id
+const updateProfile = async (req, res) => {
+  const { fullname } = req.body;
+  const userId = req.user._id;
 
   try {
-    // console.log(fullname);
-    // console.log(req.file);
     const base64String = req.file.buffer.toString('base64')
-    const dataUrl = `data:${req.file.mimetype};base64, ${base64String}`
-    // console.log(base64String);
-    
+    const dataUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    console.log(dataUrl);
 
-    cloudinary.uploader
-  .upload(dataUrl,(error, result)=>{
-
-    res.send(result)
-  }
-)
-    
+    cloudinary.uploader.upload(dataUrl, (error, result) => {
+      console.log(result);
+      
+      res.send(result);
+    });
   } catch (error) {
     console.log(error);
-    
+
     return res
       .status(500)
       .send({ success: false, message: "Internal server error" });
+      
   }
-}
+};
 
 module.exports = { registration, verifyOTP, login, userProfile, updateProfile };
