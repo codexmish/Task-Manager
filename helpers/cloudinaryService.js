@@ -12,4 +12,15 @@ const uploadCloudinary = async ({ mimetype, imageBuffer }) => {
   }
 };
 
-module.exports = { uploadCloudinary };
+const destroyFromCloudinary = async (url) => {
+  try {
+    const publcId = url.split("/").pop().split(".").shift();
+
+    cloudinary.uploader.destroy(publcId);
+  } catch (error) {
+    console.log(error);
+    throw new Error("cloudinary error");
+  }
+};
+
+module.exports = { uploadCloudinary, destroyFromCloudinary };

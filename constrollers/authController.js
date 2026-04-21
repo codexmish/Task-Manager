@@ -1,4 +1,7 @@
-const { uploadCloudinary } = require("../helpers/cloudinaryService");
+const {
+  uploadCloudinary,
+  destroyFromCloudinary,
+} = require("../helpers/cloudinaryService");
 const OTPmailSend = require("../helpers/mailService");
 const {
   isValidateEmail,
@@ -172,6 +175,8 @@ const updateProfile = async (req, res) => {
   const userId = req.user._id;
 
   try {
+    const userData = await authSchema.findOne({ _id: userId });
+    // console.log(userData);
     let updateFields = {};
     if (fullname.trim()) updateFields.fullname = fullname;
 
@@ -180,22 +185,15 @@ const updateProfile = async (req, res) => {
         mimetype: req.file.mimetype,
         imageBuffer: req.file.buffer,
       });
-
-      console.log(avatarUrl);
-
+      destroyFromCloudinary(userData.avatar);
       updateFields.avatar = await avatarUrl;
     }
-
-    console.log(updateFields);
-    
 
     const user = await authSchema.findOneAndUpdate(
       { _id: userId },
       updateFields,
       { returnDocument: "after" },
     );
-
-    console.log(user);
 
     res.status(200).send({ success: true, message: "profile updated" });
   } catch (error) {
