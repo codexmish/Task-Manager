@@ -1,6 +1,6 @@
 const express = require("express");
-const multer = require("multer")
-const upload = multer()
+const multer = require("multer");
+const upload = multer();
 const {
   registration,
   verifyOTP,
@@ -24,4 +24,3 @@ router.put(
 );
 
 module.exports = router;
-

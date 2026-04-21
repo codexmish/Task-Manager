@@ -10,6 +10,6 @@ router.get("/", (req, res) => {
 });
 
 router.use("/auth", authRoute);
-router.use("/project", authmiddleware, projectRoute)
+router.use("/project", authmiddleware, projectRoute);
 
 module.exports = router;
