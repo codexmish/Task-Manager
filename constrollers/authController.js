@@ -175,9 +175,13 @@ const updateProfile = async (req, res) => {
   const userId = req.user._id;
 
   try {
+    // getting user data
     const userData = await authSchema.findOne({ _id: userId });
+
+    // update user fullname
     if (fullname.trim()) userData.fullname = fullname;
 
+    // update user avatar
     if (req.file) {
       const avatarUrl = await uploadCloudinary({
         mimetype: req.file.mimetype,
@@ -187,6 +191,7 @@ const updateProfile = async (req, res) => {
       userData.avatar = await avatarUrl;
     }
 
+    // saving updated data
     userData.save();
 
     res
