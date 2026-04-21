@@ -1,18 +1,15 @@
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 
-const uploadCloudinary = ({ mimetype, imageBuffer }) => {
+const uploadCloudinary = async ({ mimetype, imageBuffer }) => {
   const dataUrl = `data:${mimetype};base64,${imageBuffer.toString("base64")}`;
-//   console.log(dataUrl);
 
-  cloudinary.uploader.upload(dataUrl, (error, result) => {
-    // console.log(result, error);
-    if (error) {
-        console.log(error);
-        
-      throw Error("cloudinary error");
-    }
+  try {
+    const result = await cloudinary.uploader.upload(dataUrl);
     return result.secure_url;
-  });
+  } catch (error) {
+    console.log(error);
+    throw new Error("cloudinary error");
+  }
 };
 
 module.exports = { uploadCloudinary };

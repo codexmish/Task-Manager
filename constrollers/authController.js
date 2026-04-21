@@ -172,15 +172,32 @@ const updateProfile = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    // const base64String = req.file.buffer.toString('base64')
-    // const dataUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    let updateFields = {};
+    if (fullname.trim()) updateFields.fullname = fullname;
 
-    const avatarUrl = await uploadCloudinary({
-      mimetype: req.file.mimetype,
-      imageBuffer: req.file.buffer,
-    });
+    if (req.file) {
+      const avatarUrl = await uploadCloudinary({
+        mimetype: req.file.mimetype,
+        imageBuffer: req.file.buffer,
+      });
 
-    res.status(200).send({success: true, message: "profile updated", avatarUrl})
+      console.log(avatarUrl);
+
+      updateFields.avatar = await avatarUrl;
+    }
+
+    console.log(updateFields);
+    
+
+    const user = await authSchema.findOneAndUpdate(
+      { _id: userId },
+      updateFields,
+      { returnDocument: "after" },
+    );
+
+    console.log(user);
+
+    res.status(200).send({ success: true, message: "profile updated" });
   } catch (error) {
     console.log(error);
 
