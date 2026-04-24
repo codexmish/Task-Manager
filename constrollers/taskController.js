@@ -29,9 +29,15 @@ const projectList = async (req, res) => {
   try {
     const { search } = req.query;
 
-    const projects = await projectSchema.find({ author: req.user._id, title: {
-      $regex: search, $options: "i"
-    } });
+    const projects = await projectSchema
+      .find({
+        author: req.user._id,
+        title: {
+          $regex: search,
+          $options: "i",
+        },
+      })
+      .populate("author", "fullname avatar");
 
     if (!projects) {
       return res
