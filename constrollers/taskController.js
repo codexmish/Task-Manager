@@ -29,7 +29,6 @@ const createProject = async (req, res) => {
 const projectList = async (req, res) => {
   try {
     const { search } = req.query;
-    
 
     // ---finding proojects for user as a author or member
     const projects = await projectSchema
@@ -43,7 +42,7 @@ const projectList = async (req, res) => {
           },
         ],
         title: {
-          $regex: search,
+          $regex: search || "",
           $options: "i",
         },
       })
@@ -73,7 +72,14 @@ const addTeamMemberToPtoject = async (req, res) => {
 
     // checking if member alredy exist
     const memberExist = await projectSchema.findOne({
-      members: emailExist._id,
+      $or: [
+        {
+          author: emailExist._id,
+        },
+        {
+          members: emailExist._id,
+        },
+      ],
     });
 
     if (memberExist)
