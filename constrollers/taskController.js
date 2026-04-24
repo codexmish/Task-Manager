@@ -1,4 +1,5 @@
 const { generateSlug } = require("../helpers/utils");
+const authSchema = require("../models/authSchema");
 const projectSchema = require("../models/projectSchema");
 
 // - ------create project
@@ -49,4 +50,44 @@ const projectList = async (req, res) => {
     res.status(500).send({ success: false, message: "Internal server error" });
   }
 };
-module.exports = { createProject, projectList };
+
+const addTeamMemberToPtoject = async (req, res) => {
+  const { email, projectId } = req.body;
+  try {
+    // ---checking if user  not exist
+    const emailExist = await authSchema.findOne({ email });
+
+    if (!emailExist)
+      return res
+        .status(400)
+        .send({ success: false, message: "email not exist" });
+
+    // checking if member alredy exist
+    const memberExist = await projectSchema.findOne({
+      members: emailExist._id,
+    });
+
+    if (memberExist)
+      return res
+        .status(400)
+        .send({ success: false, message: "member alredy exist" });
+
+    // ---checking if project is exist and adding member to project
+    const projectExist = await projectSchema.findOneAndUpdate(
+      { _id: projectId },
+      { members: emailExist._id },
+      { returnDocument: "after" },
+    );
+
+    if (!projectExist)
+      return res
+        .status(400)
+        .send({ success: false, message: "project not exist" });
+
+    res.status(200).send({ success: true, message: "Team member added" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Internal server error" });
+  }
+};
+
+module.exports = { createProject, projectList, addTeamMemberToPtoject };
