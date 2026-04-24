@@ -27,8 +27,11 @@ const createProject = async (req, res) => {
 
 const projectList = async (req, res) => {
   try {
-    const projects = await projectSchema.find({ author: req.user._id });
-    console.log(projects);
+    const { search } = req.query;
+
+    const projects = await projectSchema.find({ author: req.user._id, title: {
+      $regex: search, $options: "i"
+    } });
 
     if (!projects) {
       return res
