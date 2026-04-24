@@ -29,10 +29,19 @@ const createProject = async (req, res) => {
 const projectList = async (req, res) => {
   try {
     const { search } = req.query;
+    
 
+    // ---finding proojects for user as a author or member
     const projects = await projectSchema
       .find({
-        author: req.user._id,
+        $or: [
+          {
+            author: req.user._id,
+          },
+          {
+            members: req.user._id,
+          },
+        ],
         title: {
           $regex: search,
           $options: "i",
