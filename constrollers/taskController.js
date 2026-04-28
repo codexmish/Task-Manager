@@ -59,6 +59,8 @@ const projectList = async (req, res) => {
   }
 };
 
+// ----add member to project
+
 const addTeamMemberToPtoject = async (req, res) => {
   const { email, projectId } = req.body;
   try {
@@ -105,4 +107,51 @@ const addTeamMemberToPtoject = async (req, res) => {
   }
 };
 
-module.exports = { createProject, projectList, addTeamMemberToPtoject };
+// add task to project
+const addTaskToProject = async (req, res) => {
+  const { title, description, priority, assignedTo, projectId } = req.body;
+  try {
+    if (!projectId)
+      return res
+        .status(400)
+        .send({ success: false, message: "Project Not Found" });
+
+    if (!title)
+      return res
+        .status(400)
+        .send({ success: false, message: "Title is required" });
+    if (!description)
+      return res
+        .status(400)
+        .send({ success: false, message: "Description is required" });
+
+    if (!priority)
+      return res
+        .status(400)
+        .send({ success: false, message: "Priority is required" });
+
+    if (!["mid", "low", "high"].includes(priority))
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid Priority value" });
+
+    const projectData = await projectSchema.findOneAndUpdate(
+      { _id: projectId },
+      { title, description, priority, assignedTo },
+      { returnDocument: "after" },
+    );
+
+    if (!projectData)
+      return res
+        .status(400)
+        .send({ success: false, message: "Project Not Found" });
+
+        res
+        .status(200)
+        .send({ success: true, message: "Task added" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { createProject, projectList, addTeamMemberToPtoject, addTaskToProject };
