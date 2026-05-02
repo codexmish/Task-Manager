@@ -135,9 +135,11 @@ const addTaskToProject = async (req, res) => {
         .status(400)
         .send({ success: false, message: "Invalid Priority value" });
 
+        const isExistMember = await projectSchema.findOne({_id: projectId})
+
     const projectData = await projectSchema.findOneAndUpdate(
       { _id: projectId },
-      { title, description, priority, assignedTo },
+      { tasks: {title, description, priority, assignedTo} },
       { returnDocument: "after" },
     );
 
